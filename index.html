@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Latihan7</title>
+    <title>openlayers</title>
     <link
       rel="stylesheet"
       href="https://openlayers.org/en/v3.20.1/css/ol.css"
@@ -64,7 +64,7 @@
 
       // tambah point
       var point = new ol.geom.Point(
-        ol.proj.transform([110, -7], "EPSG:4326", "EPSG:3857")
+        ol.proj.transform([110.367107, -7.782915], "EPSG:4326", "EPSG:3857")
       );
       var feature = new ol.Feature({
         geometry: point,
