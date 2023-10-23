@@ -1,74 +1,128 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>GIS Web Application with Leaflet</title>
+    <title>DIY</title>
     <link
       rel="stylesheet"
-      href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css"
+      href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+      integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+      crossorigin=""
     />
+
     <style>
-      /* Set the map container size */
-      #map {
-        height: 500px;
+      h2 {
+        margin-top: 16;
+        text-align: center;
+        font-size: 15;
+        color: rgb(0, 0, 0);
+        background-color: aquamarine;
       }
     </style>
   </head>
-  <body>
-    <div id="map"></div>
-    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
-    <script>
-      // Initialize the map
-      var map = L.map("map").setView([-7.76591, 110.37742], 12);
 
-      // Add a tile layer (OpenStreetMap)
-      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  <body>
+    <h2>Fasilitas Umum di Daerah Istimewa Yogyakarta</h2>
+    <div
+      id="map"
+      style="
+        height: 600px;
+        margin-top: 0px;
+        margin-bottom: 0px;
+        margin-left: 16px;
+        margin-right: 16px;
+      "
+    ></div>
+
+    <!-- Pastikan Anda meletakkan ini SETELAH Leaflet CSS -->
+    <script
+      src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+      integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+      crossorigin=""
+    ></script>
+
+    <script>
+      var map = L.map("map").setView([-7.804995, 110.373583], 11);
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 30,
         attribution:
-          '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
       }).addTo(map);
 
-      // Add a marker
-      var marker = L.marker([-7.76591, 110.37742]).addTo(map);
-      marker.bindPopup("Universitas Gadjah Mada").openPopup();
+      // Menambahkan layer tile (OpenStreetMap)
+      L.tileLayer("https://tile.openstreetmap.org/{z}/{x}/{y}.png", {
+        maxZoom: 19,
+        attribution:
+          '&copy; <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a>',
+      }).addTo(map);
 
-      // Array Marker
+      // Menambahkan array marker
       var locations = [
-        ["LOCATION_1", 11.8166, 122.0942],
-        ["LOCATION_2", 11.9804, 121.9189],
-        ["LOCATION_3", 10.7202, 122.5621],
-        ["LOCATION_4", 11.3889, 122.6277],
-        ["LOCATION_5", 10.5929, 122.6325],
+        { coords: [-7.795201, 110.427837], name: "Bandara Adisucipto" },
+        { coords: [-7.789023, 110.36319], name: "Stasiun Tugu" },
+        { coords: [-7.78913, 110.384572], name: "Stasiun Lempuyangan" },
+        { coords: [-7.782915, 110.367107], name: "Tugu" },
+        { coords: [-7.811321, 110.363271], name: "Alun-alun Kidul" },
       ];
-      for (var i = 0; i < locations.length; i++) {
-        marker = new L.marker([locations[i][1], locations[i][2]])
-          .bindPopup(locations[i][0])
-          .addTo(map);
+
+      // Loop through the array and add markers to the map
+      locations.forEach(function (location) {
+        var marker = L.marker(location.coords).addTo(map);
+        marker.bindPopup(location.name).openPopup();
+      });
+
+      // Menambahkan lingkaran
+      var circleCoordinates = [
+        [-7.795201, 110.427837],
+        [-7.905466, 110.051419],
+      ];
+      var circleRadiuses = [2000, 2000];
+      var circleColors = ["red", "red"];
+      for (var i = 0; i < circleCoordinates.length; i++) {
+        var circle = L.circle(circleCoordinates[i], {
+          color: circleColors[i],
+          fillColor: circleColors[i],
+          fillOpacity: 0.5,
+          radius: circleRadiuses[i],
+        }).addTo(map);
+        circle.bindPopup("Zona Merah Bandara");
       }
 
-      // Circle
-      var circle = L.circle([-7.76591, 110.37742], {
-        color: "red",
-        fillColor: "#f03",
-        fillOpacity: 0.5,
-        radius: 1500,
-      }).addTo(map);
+      var polygons = [
+        {
+          coordinates: [
+            [-7.762833, 110.371189],
+            [-7.767021, 110.369665],
+            [-7.770891, 110.373335],
+            [-7.774951, 110.371682],
+            [-7.776546, 110.38044],
+            [-7.768276, 110.387737],
+          ],
+          color: "Yellow",
+          fillColor: "Yellow",
+          fillOpacity: 0.5,
+          popupContent: "Kawasa Universitas Gadjah Mada",
+        },
+      ];
 
-      // Function
+      polygons.forEach(function (polygonData) {
+        var polygon = L.polygon(polygonData.coordinates, {
+          color: polygonData.color,
+          fillColor: polygonData.fillColor,
+          fillOpacity: polygonData.fillOpacity,
+        }).addTo(map);
+
+        // Menambahkan pop-up informasi
+        polygon.bindPopup(polygonData.popupContent);
+      });
+
+      // Mengelola klik pada peta
       var popup = L.popup();
-
       function onMapClick(e) {
         popup
           .setLatLng(e.latlng)
           .setContent("Ini koordinat " + e.latlng.toString())
           .openOn(map);
       }
-
-      // Menambahkan poligon
-      var polygon = L.polygon([
-        [51.509, -0.08],
-        [51.503, -0.06],
-        [51.51, -0.047],
-      ]).addTo(map);
-
       map.on("click", onMapClick);
     </script>
   </body>
