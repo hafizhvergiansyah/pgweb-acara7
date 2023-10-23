@@ -30,9 +30,6 @@
       var marker = L.marker([-7.76591, 110.37742]).addTo(map);
       marker.bindPopup("Universitas Gadjah Mada").openPopup();
 
-      var marker = L.marker([-7.7713847, 110.3774998]).addTo(map);
-      marker.bindPopup("Universitas Negeri Yogyakarta").openPopup();
-
       // Array Marker
       var locations = [
         ["LOCATION_1", 11.8166, 122.0942],
@@ -64,6 +61,13 @@
           .setContent("Ini koordinat " + e.latlng.toString())
           .openOn(map);
       }
+
+      // Menambahkan poligon
+      var polygon = L.polygon([
+        [51.509, -0.08],
+        [51.503, -0.06],
+        [51.51, -0.047],
+      ]).addTo(map);
 
       map.on("click", onMapClick);
     </script>
